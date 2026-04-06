@@ -1,0 +1,40 @@
+{
+  "name": "sean-agentic-orchestrator",
+  "version": "2.0.0",
+  "description": "Claude Code skill for orchestrating complex engineering work with atomic task decomposition, verification gates, and cost-aware model routing",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "skill",
+    "agentic",
+    "orchestrator",
+    "engineering",
+    "ai",
+    "automation",
+    "task-decomposition",
+    "code-quality"
+  ],
+  "author": "Sean Cheick",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seancheick/Sean-Agentic-Orchestrator.git"
+  },
+  "homepage": "https://github.com/seancheick/Sean-Agentic-Orchestrator#readme",
+  "bugs": {
+    "url": "https://github.com/seancheick/Sean-Agentic-Orchestrator/issues"
+  },
+  "files": [
+    "SKILL.md",
+    "references/",
+    "scripts/install.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "bin": {
+    "install-agentic-orchestrator": "./scripts/install.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js"
+  }
+}
