@@ -5,8 +5,6 @@
 **A Claude Code skill that guarantees your engineering work is done — not just written.**
 
 [![npm version](https://img.shields.io/npm/v/sean-agentic-orchestrator?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/sean-agentic-orchestrator)
-[![npm downloads](https://img.shields.io/npm/dm/sean-agentic-orchestrator?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/sean-agentic-orchestrator)
-[![GitHub stars](https://img.shields.io/github/stars/seancheick/Sean-Agentic-Orchestrator?style=for-the-badge&logo=github&color=FFD700)](https://github.com/seancheick/Sean-Agentic-Orchestrator/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-8A2BE2?style=for-the-badge&logo=anthropic)](https://docs.anthropic.com/en/docs/claude-code)
 
@@ -265,8 +263,6 @@ Founder & CEO · [B&Br Technology](https://github.com/seancheick)
 
 [![GitHub](https://img.shields.io/badge/GitHub-seancheick-181717?style=for-the-badge&logo=github)](https://github.com/seancheick)
 [![npm](https://img.shields.io/badge/npm-sean--agentic--orchestrator-CB3837?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/sean-agentic-orchestrator)
-
-*Built with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) · Powered by [Anthropic](https://anthropic.com)*
 
 ---
 
