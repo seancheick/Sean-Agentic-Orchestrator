@@ -70,6 +70,15 @@ Gather and confirm: goal, constraints, scope boundary, acceptance criteria, know
 3. Check for monorepo structure
 4. Output restated mission, assumptions, scope boundary
 
+**Eval definition (define before executing):**
+
+Before writing a single line of code, define two evals:
+
+1. **Capability eval** — What does passing look like? Write the specific test, assertion, or observable behavior that proves the feature works. Example: "POST /auth/login returns 200 with a valid JWT and sets a refresh token cookie."
+2. **Regression eval** — What existing behavior must not break? Identify the tests or behaviors that cover adjacent code. Run them now to capture the baseline pass/fail state.
+
+Record both evals in the planning output. Re-run both after implementation to measure the delta. A task cannot enter the Done Gate if the capability eval does not pass or the regression eval degrades.
+
 ### PHASE 2 -- TASK BREAKDOWN
 
 Break the goal into atomic tasks. For each task:

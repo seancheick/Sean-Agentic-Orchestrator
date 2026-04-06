@@ -26,6 +26,11 @@
 | T1 | {title} | {files} | {tier} | {complexity} | {risk} | none |
 | T2 | {title} | {files} | {tier} | {complexity} | {risk} | T1 |
 
+### Evals
+
+**Capability Eval:** {the specific test/assertion/behavior that proves this feature works}
+**Regression Eval:** {existing tests or behaviors that must not degrade — baseline state captured}
+
 ### Task Details
 
 **T1: {title}**
@@ -66,6 +71,17 @@
 - Build: PASS/FAIL
 - Tests: PASS/FAIL ({n} passed, {n} failed, {n} skipped)
 - Lint: PASS/FAIL
+
+### Eval Results
+- Capability eval: PASS/FAIL — {what was verified}
+- Regression eval: PASS/FAIL — {baseline vs current, any degradation}
+
+### Cost Ledger
+- Model tier: {cheap/mid/high}
+- Estimated tokens: {n}
+- Retries: {n}
+- Repair passes: {n}
+- Escalations: {none / reason}
 
 ### Assumptions
 - {any assumptions made during implementation}

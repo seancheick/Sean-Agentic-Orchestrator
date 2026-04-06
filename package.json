@@ -1,6 +1,6 @@
 {
   "name": "sean-agentic-orchestrator",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "Claude Code skill for orchestrating complex engineering work with atomic task decomposition, verification gates, and cost-aware model routing",
   "keywords": [
     "claude",
