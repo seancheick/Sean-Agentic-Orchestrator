@@ -1,6 +1,6 @@
 ---
 name: agentic-orchestrator
-description: Agentic engineering orchestrator for complex software work. Triggers when the user needs to execute large features, multi-step refactors, debugging campaigns, product backlogs, or any work requiring task decomposition, verification gates, and model-tier routing. Also triggers on requests like "orchestrate", "break this down", "plan and execute", or any multi-task engineering goal.
+description: Use for complex multi-step engineering work: large features, refactors, debugging campaigns, product backlogs, sprint execution. Triggers on "orchestrate", "break this down", "plan and execute", "sprint", "work on backlog".
 ---
 
 # Agentic Engineering Orchestrator v2.0
@@ -27,9 +27,11 @@ The leader agent owns the plan, routes models, tracks progress, verifies complet
 
 ### 5. Token Efficiency
 Never spend premium-model tokens on cheap work. Never re-read large context unnecessarily. Never scan the whole repo unless required.
+Run `/compact` when context reaches ~60% (completed work bloats the window). Start a fresh session at ~75% carrying only: task list + current state + key decisions.
 
 ### 6. Surgical Context
 Prefer small snippets, specific files, exact functions, targeted diffs. Avoid full repo scans, conversational drift, repeated history restatement.
+Spawn subagents for research/WebSearch — only the summary returns to parent context, keeping the main window lean.
 
 ## Agent System
 
@@ -91,10 +93,8 @@ Files/Areas: {expected files touched, max 3}
 Output: {concrete deliverable}
 Success Criteria: {one sentence, verifiable}
 Agent(s): {Reader -> Builder -> Test -> QA}
-Model Tier: {cheap/mid/high}
-Complexity: {low/medium/high}
+Model Tier: {cheap/mid/high} — also sets Agent tool model: param when spawning
 Dependencies: {T{n} IDs or "none"}
-Risk Level: {low/medium/high/critical}
 ```
 
 **Decomposition rules:**
@@ -107,6 +107,8 @@ Risk Level: {low/medium/high/critical}
 Do not execute until the task list is confirmed.
 
 ### PHASE 3 -- TASK EXECUTION
+
+**Parallelism first:** Before executing sequentially, identify which tasks have no dependencies on each other. Spawn those concurrently using `Agent(run_in_background: true, model: "{tier}")`. All parallel spawns go in ONE message. Only dependent tasks wait.
 
 For each task, run this agent pipeline:
 
@@ -206,9 +208,30 @@ When this skill activates:
 2. Restate goal concisely
 3. Run auto-detection (language, framework, test runner, build system)
 4. Decompose into atomic tasks with model tier assignments
-5. Present checklist for confirmation
-6. Recommend context strategy
-7. Begin T1 if user confirms, or wait for adjustments
+5. Recommend context strategy
+
+**Clear task (scope obvious, no ambiguity):** Present checklist + begin T1 immediately in the same response. Do not wait for confirmation — unnecessary round-trips burn tokens and slow execution.
+
+**Ambiguous task (scope unclear, conflicting requirements, high risk):** Present checklist and explicitly ask one focused clarifying question before proceeding.
+
+## Session Handoff Template
+
+Use this when starting a fresh session at ~75% context. Carry only:
+
+```
+## SESSION HANDOFF
+
+Goal: {original goal in one sentence}
+Completed: {T1, T2, T3 — one line each with what was done}
+Active: {Tn — current task, what was done, what remains}
+Blocked: {Tn — reason, what's needed to unblock}
+Remaining: {list of task IDs not yet started}
+Key decisions: {any architectural or design choices made that affect future tasks}
+Files modified: {list of changed files}
+Next action: {exactly what to do first in this new session}
+```
+
+Drop everything else — debug history, completed task transcripts, exploration context. The handoff is the only context the new session needs.
 
 ## Anti-Patterns
 

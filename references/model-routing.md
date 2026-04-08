@@ -1,5 +1,21 @@
 # Model Routing — Full Policy
 
+## How Model Routing Actually Works
+
+**Within a single Claude Code session:** The model DOES NOT switch. If you started on Sonnet, you stay on Sonnet. The cheap/mid/high tiers are a **reasoning discipline** — less verbose output, less over-engineering — not a literal model change.
+
+**Real model switching requires the Agent tool** with the `model:` parameter:
+```
+Agent(model: "haiku", prompt: "scan these files and extract X")
+Agent(model: "sonnet", prompt: "implement feature Y")  
+Agent(model: "opus", prompt: "design the architecture for Z")
+```
+Each spawned subagent runs on its assigned model, starts with a fresh 200k context, and only its result returns to the parent. This is how you actually save cost.
+
+**When NOT to spawn a subagent:** Simple inline edits, single-file reads, quick fixes. Spawning overhead (~200 tokens) only pays off for tasks that would otherwise burn 2k+ tokens in the parent context.
+
+---
+
 ## Tier Definitions
 
 | Tier | Model | Latency | Cost | Use Cases |
