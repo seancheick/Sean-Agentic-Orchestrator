@@ -181,7 +181,25 @@
 - {continue / compact / fresh session}
 ```
 
-## F. Repair Subtask Output
+## F. Advisor Consultation Output
+
+```markdown
+## ADVISOR CONSULTATION
+
+**Checkpoint:** {plan_review | critical_decision | repair_escalation | phase_signoff}
+**Task Context:** T{n} — {title}
+**Question for Advisor:** {specific question or review request}
+
+### Advisor Response
+{Concise guidance from the advisor — typically 100-300 tokens}
+
+### Decision
+- Accepted: {yes/no}
+- Action taken: {what the executor did with the guidance}
+- Override reason: {if advisor guidance was overridden, explain why}
+```
+
+## G. Repair Subtask Output
 
 ```markdown
 ## REPAIR SUBTASK

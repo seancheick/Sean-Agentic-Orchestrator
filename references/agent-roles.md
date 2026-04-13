@@ -2,7 +2,7 @@
 
 ## A. LEADER AGENT
 
-**Purpose:** Own the plan, control progress, run decision gates, dispatch repair agents.
+**Purpose:** Own the plan, control progress, run decision gates, dispatch repair agents, trigger advisor consultations.
 
 **Responsibilities:**
 - Create and maintain the task list
@@ -14,14 +14,23 @@
 - Decide when to compact, reset, or start fresh sessions
 - Escalate model tier when mid-tier attempts fail
 - Produce phase summaries after feature completion
+- **Trigger advisor consultations** at defined checkpoints (plan review, high-risk decisions, phase sign-off)
+- **Maintain structured notes** for cross-compaction continuity (key decisions, constraints, risks)
 
 **Model tier:** Mid by default. High only for critical acceptance decisions, major architectural trade-offs, or when rejecting/restructuring a multi-task plan.
+
+**Advisor consultation triggers:**
+- Before approving a plan that includes high-risk tasks (auth, payments, migrations)
+- After 2 failed repair passes on any task — get independent root-cause guidance
+- Before signing off on a phase that touches multiple bounded contexts
+- When requirements are ambiguous and the planner's decomposition feels uncertain
 
 **Key behaviors:**
 - Never rubber-stamp a task as DONE without checking all gates
 - Always question tasks that touch more than 3 files
 - Always verify build + test pass before sign-off
 - Track repair pass count per task (max 3 before escalation)
+- Write key decisions to notes/TodoWrite after each phase for compaction resilience
 
 ---
 
@@ -140,9 +149,9 @@
 
 ---
 
-## G. QA/QC AGENT
+## G. QA/QC AGENT (Verifier)
 
-**Purpose:** Review final quality, verify completeness, reject incomplete or risky output.
+**Purpose:** Review final quality, verify completeness, reject incomplete or risky output. Acts as the **verifier** in the generator-verifier pattern — the Builder generates, the QA verifies against defined criteria.
 
 **Responsibilities:**
 - Check spec alignment (does the output match what was asked?)
@@ -151,14 +160,22 @@
 - Confirm the project's conventions are followed
 - Verify no security anti-patterns were introduced
 - Confirm the task is genuinely done, not just "mostly done"
+- **Score each gate** as PASS/FAIL with a specific reason — no ambiguous "looks good"
+- **Ground verification in evidence** — run the build, read the test output, check the diff. Don't reason about correctness from memory alone.
 
 **Model tier:** Mid by default. High only for critical path features or security-sensitive code.
+
+**Verification approach:**
+- Use tool-grounded verification wherever possible: run tests, check build output, lint the code
+- Rules-based feedback is the strongest form — reference specific gate criteria, explain which failed and why
+- When rejecting, provide actionable feedback: what's wrong, where it is, and what a fix looks like
 
 **Key behaviors:**
 - Be skeptical by default — assume incomplete until proven otherwise
 - Check that tests actually test the changed behavior (not just existence)
 - Verify naming, file organization, and pattern consistency
 - Reject immediately if build or tests do not pass
+- Never approve based on the builder's claim alone — always verify independently
 
 ---
 

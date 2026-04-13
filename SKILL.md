@@ -3,7 +3,7 @@ name: agentic-orchestrator
 description: Use for complex multi-step engineering work: large features, refactors, debugging campaigns, product backlogs, sprint execution. Triggers on "orchestrate", "break this down", "plan and execute", "sprint", "work on backlog".
 ---
 
-# Agentic Engineering Orchestrator v2.0
+# Agentic Engineering Orchestrator v2.3
 
 ## Purpose
 
@@ -33,6 +33,16 @@ Run `/compact` when context reaches ~60% (completed work bloats the window). Sta
 Prefer small snippets, specific files, exact functions, targeted diffs. Avoid full repo scans, conversational drift, repeated history restatement.
 Spawn subagents for research/WebSearch — only the summary returns to parent context, keeping the main window lean.
 
+### 7. Advisor-Guided Decisions
+Use the Advisor Pattern for critical decision points. A cost-efficient executor (Sonnet/Haiku) handles routine work end-to-end and consults a high-capability advisor (Opus) only when it encounters architectural choices, ambiguous requirements, or repeated failures. The advisor never executes — it advises. This yields higher accuracy at lower total cost than running everything on the highest tier.
+
+For full advisor integration details, read `references/advisor-pattern.md`.
+
+### 8. Artifact-Based Communication
+When subagents produce large outputs, they store results externally (files, TodoWrite) and return lightweight summaries (~100-500 tokens) to the parent context. The parent reads details on demand. This prevents context bloat from agent-to-agent communication.
+
+For full context engineering techniques, read `references/context-engineering.md`.
+
 ## Agent System
 
 For detailed agent specifications and responsibilities, read `references/agent-roles.md`.
@@ -48,6 +58,8 @@ For detailed agent specifications and responsibilities, read `references/agent-r
 | **QA/QC** | Quality review, completeness verification, rejection authority | Mid |
 | **Security** | OWASP/STRIDE scanning, dependency audit, secrets detection | Mid (High for auth/crypto) |
 | **Perf** | Profiling, bottleneck detection, optimization validation | Mid |
+
+**Advisor consultation:** The Leader consults a High-tier advisor at defined checkpoints — plan review, high-risk task decisions, and phase sign-off. See `references/advisor-pattern.md` for when and how to trigger advisor consultations.
 
 ## Model Routing Policy
 
@@ -106,6 +118,8 @@ Dependencies: {T{n} IDs or "none"}
 
 Do not execute until the task list is confirmed.
 
+**Advisor checkpoint:** For projects with high-risk tasks (auth, payments, migrations, public APIs) or ambiguous requirements, consult the advisor to review the plan before execution begins. The advisor checks: decomposition correctness, dependency accuracy, tier assignments, and missed risks.
+
 ### PHASE 3 -- TASK EXECUTION
 
 **Parallelism first:** Before executing sequentially, identify which tasks have no dependencies on each other. Spawn those concurrently using `Agent(run_in_background: true, model: "{tier}")`. All parallel spawns go in ONE message. Only dependent tasks wait.
@@ -130,7 +144,15 @@ When any issue is found:
 4. Re-run full verification pipeline (build, test, lint, QA)
 5. Re-enter Done Gate
 
-**Repair budget:** Max 3 repair passes per task. If not converging after 3 passes, escalate to High model. If still failing, mark BLOCKED and move to next independent task.
+**Repair budget:** Max 3 repair passes per task.
+
+**Termination strategies** (stop the loop when any is true):
+- **Convergence:** The fix between pass N and N-1 changes fewer than 5 lines and the same test still fails → the approach is wrong, not the implementation. Stop and rethink.
+- **Quality threshold:** All gates pass. Stop immediately — don't "improve" passing code.
+- **Escalation:** After pass 2 without resolution, consult the advisor (High tier) for root-cause guidance before attempting pass 3.
+- **Max passes:** After 3 passes, mark BLOCKED and move to next independent task.
+
+**Avoid the self-consistency trap:** If the same agent keeps defending its original approach across repair passes, use a different agent role (e.g., switch from Builder to Debug) or consult the advisor for an independent perspective.
 
 ### PHASE 5 -- TASK SIGN-OFF
 
@@ -143,6 +165,7 @@ After completing a batch of related tasks or a full feature:
 - Run production build if applicable
 - Inspect cross-module integration
 - Check for unintended side effects
+- **Advisor checkpoint:** For features touching high-risk areas, consult the advisor for a final review — does the implementation match the original intent? Are there subtle risks the QA agent might miss?
 - Produce summary: what shipped, what risks remain, what to tackle next
 
 ## Done Gate
@@ -178,6 +201,8 @@ Track with TodoWrite. Update transitions in real-time.
 
 ## Context and Token Management
 
+For comprehensive context engineering techniques, read `references/context-engineering.md`.
+
 **Session discipline:** One session per feature, bug cluster, refactor slice, or subsystem.
 
 **Compact triggers:** Token usage at ~50-60%, main reasoning done, large debug thread, transcript bloat from completed subtasks.
@@ -185,6 +210,12 @@ Track with TodoWrite. Update transitions in real-time.
 **New session triggers:** Switching features/subsystems, stale debug history, context drift hurting precision.
 
 **Reading policy:** Always prefer exact file paths, function names, targeted symbols, diffs. Never "scan the whole repo" or repeated full-file loads.
+
+**Just-in-time retrieval:** Don't pre-load all context upfront. Use Grep/Glob for discovery (zero context cost), then read only the specific lines you need to edit. Load context at the moment it's needed, not before.
+
+**Structured notes:** For long-running projects, maintain key decisions and state in NOTES.md or TodoWrite. This survives compaction and session handoffs — cheaper to re-read a 200-line notes file than to re-discover through exploration.
+
+**Artifact-based agent output:** Subagents return concise summaries to the parent context. Large outputs (research packs, detailed reports) go to external storage. Parent reads details on demand.
 
 ## Failure Recovery
 

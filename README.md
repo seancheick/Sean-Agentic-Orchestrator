@@ -15,7 +15,7 @@
 
 ---
 
-*Atomic task decomposition · 9-point verification gates · Cost-aware model routing · Self-healing repair loops*
+*Atomic task decomposition · 9-point verification gates · Advisor pattern · Cost-aware model routing · Self-healing repair loops · Context engineering*
 
 </div>
 
@@ -28,10 +28,11 @@ When you give Claude Code a large engineering goal, this skill activates and:
 1. 🔍 **Decomposes** the goal into atomic, testable tasks (max 3 files each)
 2. ⚡ **Auto-detects** your stack — language, framework, test runner, build system, linter
 3. 💰 **Routes** each task to the cheapest model tier capable of handling it (saves tokens)
-4. 🔁 **Executes** tasks sequentially with a strict agent pipeline: Reader → Builder → Test → QA → Leader sign-off
-5. ✅ **Verifies** every task through a 9-point Done Gate (build, tests, lint, regression, security, QA...)
-6. 🛠️ **Self-heals** — failures trigger automatic repair loops with escalation after 3 attempts
-7. 🧹 **Manages context** — advises when to compact or start fresh sessions
+4. 🧠 **Advisor pattern** — cheap executor consults Opus at critical decision points for higher accuracy at lower cost
+5. 🔁 **Executes** tasks sequentially with a strict agent pipeline: Reader → Builder → Test → QA → Leader sign-off
+6. ✅ **Verifies** every task through a 9-point Done Gate (build, tests, lint, regression, security, QA...)
+7. 🛠️ **Self-heals** — failures trigger repair loops with convergence detection and smart termination
+8. 🧹 **Context engineering** — just-in-time retrieval, structured notes, artifact-based communication, compaction strategy
 
 > **No task is marked DONE until build passes, tests pass, and the leader agent explicitly approves.**
 
@@ -198,6 +199,9 @@ The orchestrator routes each task to the **cheapest capable model tier** — no 
 | 🟢 **Cheap** | haiku | Reading, scanning, extraction, summaries |
 | 🟡 **Mid** | sonnet | Implementation, testing, QA, bug fixes |
 | 🔴 **High** | opus | Architecture, ambiguous root-cause, critical reviews |
+| 🧠 **Advisor** | opus (consulted) | Plan review, high-risk decisions, phase sign-off |
+
+> **New in v2.3:** The Advisor Pattern — instead of running entire tasks on the most expensive model, a Mid-tier executor consults a High-tier advisor only at critical decision points. Result: +2.7% accuracy, -11.9% cost.
 
 ---
 
@@ -208,8 +212,10 @@ agentic-orchestrator/
 ├── SKILL.md                        # Core orchestrator — principles, loop, done gate
 └── references/
     ├── agent-roles.md              # 9 specialized agent definitions
+    ├── advisor-pattern.md          # Advisor consultation strategy & integration
+    ├── context-engineering.md      # Token efficiency & memory management
     ├── model-routing.md            # Full escalation/de-escalation policy
-    ├── output-templates.md         # 6 structured output templates
+    ├── output-templates.md         # 7 structured output templates
     ├── stack-patterns.md           # 9 tech stack command & pitfall guides
     └── failure-recovery.md         # Recovery patterns & escalation ladder
 ```
