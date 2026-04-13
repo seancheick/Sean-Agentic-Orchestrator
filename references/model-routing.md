@@ -61,6 +61,33 @@ Return to a lower tier after:
 5. Task is mostly boilerplate or repetitive
 6. The hard reasoning is done and only execution remains
 
+## The Advisor Pattern
+
+Instead of running entire tasks on the High tier, use the **Advisor Pattern**: a Mid-tier executor handles work end-to-end and consults a High-tier advisor only at critical decision points.
+
+**How it works:**
+```
+Builder (mid) handles routine implementation
+  -> Hits ambiguity or high-risk decision
+  -> Spawns: Agent(model: "opus", prompt: "Advise on [specific question]")
+  -> Advisor returns concise guidance (~100-300 tokens)
+  -> Builder continues with advisor's direction
+```
+
+**Cost impact:** This yields higher accuracy than Mid-tier alone while costing less than running the full task on High tier. Benchmarks show 11.9% cost reduction vs. running everything on Mid, with +2.7 points accuracy improvement.
+
+**Advisor budget per project:**
+| Phase | Max Advisor Calls | Purpose |
+|-------|------------------|---------|
+| Planning | 1 | Review task decomposition |
+| Execution (per task) | 0-2 | Only for high-risk or ambiguous decisions |
+| Repair escalation | 1 | Root-cause guidance after 2 failed passes |
+| Phase QA | 1 | Final review of feature completeness |
+
+Total advisor calls should not exceed **number of tasks + 2**. If you're calling the advisor on every task, decompose further or improve the executor's prompt.
+
+For full advisor pattern details, read `references/advisor-pattern.md`.
+
 ## Anti-Waste Rules
 
 1. Never run all agents on the highest tier by default
@@ -69,6 +96,7 @@ Return to a lower tier after:
 4. Never stay on High tier after the hard reasoning is done
 5. Always de-escalate once the architecture/root-cause/plan is settled
 6. Batch similar cheap-tier operations in one pass to reduce overhead
+7. **Prefer advisor consultations over full High-tier escalation** — the advisor answers one focused question at a fraction of the cost of running an entire task on High
 
 ## Practical Routing Examples
 
@@ -111,6 +139,22 @@ Test (cheap) -> verify existing tests pass
 QA (mid) -> review consistency
 Leader (mid) -> sign off
 ```
+
+### High-Risk Feature (Advisor Pattern)
+```
+Reader (cheap) -> scan relevant files
+Planner (mid) -> decompose into tasks
+Advisor (high) -> review plan for missed risks [1 consultation]
+Builder (mid) -> implement task
+  -> Builder hits auth boundary decision
+  -> Advisor (high) -> advise on approach [1 consultation]
+  -> Builder (mid) -> continues with advisor direction
+Test (mid) -> validate behavior
+QA (mid) -> verify all gates
+Advisor (high) -> final feature review [1 consultation]
+Leader (mid) -> sign off
+```
+Total advisor calls: 3 (plan review, critical decision, final review)
 
 ## Token Budget Awareness
 
