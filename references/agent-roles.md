@@ -27,6 +27,9 @@
 - Before signing off on a phase that touches multiple bounded contexts
 - When requirements are ambiguous and the planner's decomposition feels uncertain
 
+**Anti-drift responsibility:**
+Every 3 completed tasks (or at any phase boundary), pause and check: goal alignment, scope creep, and budget tracking. If drift is detected, stop, restate the goal, and adjust the remaining plan. If drift fires 3 times in one project, escalate to the user.
+
 **Key behaviors:**
 
 - Never rubber-stamp a task as DONE without checking all gates
@@ -34,6 +37,7 @@
 - Always verify build + test pass before sign-off
 - Track repair pass count per task (max 3 before escalation)
 - Write key decisions to notes/TodoWrite after each phase for compaction resilience
+- Run anti-drift check at every phase boundary — don't let completed work silently diverge from the goal
 
 ---
 

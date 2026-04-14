@@ -109,6 +109,18 @@ Model Tier: {cheap/mid/high} — also sets Agent tool model: param when spawning
 Dependencies: {T{n} IDs or "none"}
 ```
 
+**Task-type hints** (starting points for the Planner — override based on actual task needs):
+
+| Task Type | Typical Pipeline | Notes |
+|-----------|-----------------|-------|
+| Bug fix | Reader → Debug → Builder → Test → QA | Debug before Build — understand root cause first |
+| New feature | Reader → Builder → Test → Security → QA | Security if it touches boundaries |
+| Refactor | Reader → Builder → Test → QA | Lean pipeline — existing tests should cover behavior |
+| Performance | Reader → Perf → Builder → Perf → QA | Measure before AND after |
+| Security fix | Reader → Security → Builder → Security → QA | Security reviews both the problem and the fix |
+
+These are **starting signals, not rigid routes.** The Planner determines the actual pipeline based on the specific task. A "bug fix" spanning 3 services needs a different plan than a 1-line typo fix. Let the orchestrator adapt.
+
 **Decomposition rules:**
 - Max 3 files per task (prefer 1-2). Split if more.
 - Success criteria must be statable in one sentence. If not, task is too broad.
@@ -122,7 +134,21 @@ Do not execute until the task list is confirmed.
 
 ### PHASE 3 -- TASK EXECUTION
 
-**Parallelism first:** Before executing sequentially, identify which tasks have no dependencies on each other. Spawn those concurrently using `Agent(run_in_background: true, model: "{tier}")`. All parallel spawns go in ONE message. Only dependent tasks wait.
+**Parallel vs sequential decision:**
+
+Before executing, classify tasks for parallelism. Be conservative — coding tasks have fewer truly parallelizable operations than research tasks, and coordination overhead is real.
+
+| Condition | Decision |
+|-----------|----------|
+| Tasks touch different files with no shared imports/state | Parallelize |
+| 3+ independent tasks in the queue with no dependency chain | Parallelize |
+| Tasks touch the same module, shared types, or common state | Sequential |
+| Single-file fix or 1-2 line change | Sequential (spawning overhead > time saved) |
+| Ambiguous independence | Sequential (safer default) |
+
+**When parallelizing:** Spawn concurrent tasks using `Agent(run_in_background: true, model: "{tier}")`. All parallel spawns go in ONE message. Each parallel task still runs its full verification pipeline independently. Merge conflicts between parallel tasks = immediate repair subtask.
+
+**Cost guardrail:** Multi-agent runs use ~15x more tokens than single-agent. Only parallelize when the time savings justify the token cost — typically 3+ truly independent tasks.
 
 For each task, run this agent pipeline:
 
@@ -157,6 +183,14 @@ When any issue is found:
 ### PHASE 5 -- TASK SIGN-OFF
 
 Leader checks Done Gate. Only then update checklist and begin next task.
+
+**Anti-drift check (every 3 completed tasks or at phase boundary):**
+The Leader pauses and answers three questions:
+1. **Goal alignment:** Does the work completed so far still serve the original goal? (If the goal was "add JWT auth" and T3 is refactoring the database layer, something drifted.)
+2. **Scope creep:** Has any task expanded beyond its original boundary? (Check files touched vs files planned.)
+3. **Budget check:** Are token/repair costs tracking to plan, or is one task consuming disproportionate resources?
+
+If any answer reveals drift: stop, restate the goal, adjust the remaining task list, and note the correction. If the drift check fires 3 times in one project, escalate to the user — the goal or constraints may need clarification.
 
 ### PHASE 6 -- PHASE QA / PROJECT QA
 
