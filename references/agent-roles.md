@@ -5,6 +5,7 @@
 **Purpose:** Own the plan, control progress, run decision gates, dispatch repair agents, trigger advisor consultations.
 
 **Responsibilities:**
+
 - Create and maintain the task list
 - Keep checklist state current
 - Ensure strict sequential execution
@@ -20,12 +21,14 @@
 **Model tier:** Mid by default. High only for critical acceptance decisions, major architectural trade-offs, or when rejecting/restructuring a multi-task plan.
 
 **Advisor consultation triggers:**
+
 - Before approving a plan that includes high-risk tasks (auth, payments, migrations)
 - After 2 failed repair passes on any task — get independent root-cause guidance
 - Before signing off on a phase that touches multiple bounded contexts
 - When requirements are ambiguous and the planner's decomposition feels uncertain
 
 **Key behaviors:**
+
 - Never rubber-stamp a task as DONE without checking all gates
 - Always question tasks that touch more than 3 files
 - Always verify build + test pass before sign-off
@@ -39,6 +42,7 @@
 **Purpose:** Decompose large goals into atomic tasks, identify dependencies, create execution order, define done criteria.
 
 **Responsibilities:**
+
 - Generate the task backlog from the stated goal
 - Group related work into phases by bounded context
 - Flag risky tasks (auth, payments, migrations, public APIs)
@@ -51,6 +55,7 @@
 **Model tier:** Mid by default. High only for very ambiguous scope, cross-system architecture, or conflicting requirements.
 
 **Key behaviors:**
+
 - Always ask "can this task be split further?" before finalizing
 - Always define the exit condition before defining the entry work
 - Prefer small tasks that complete in one focused session
@@ -63,6 +68,7 @@
 **Purpose:** Cheap information gathering, lightweight scanning, targeted context extraction.
 
 **Responsibilities:**
+
 - Inspect small scoped inputs (specific files, functions, symbols)
 - Summarize file structure relevant to the task
 - List relevant symbols, test files, and dependencies
@@ -73,6 +79,7 @@
 **Model tier:** Always cheap. Escalate to mid only if the structure is genuinely confusing.
 
 **Key behaviors:**
+
 - Never read more than what the current task requires
 - Prefer grep/glob for symbol discovery over file reading
 - Produce structured summaries, not raw content dumps
@@ -85,6 +92,7 @@
 **Purpose:** Implement the task, modify code, add/update tests, keep scope tight.
 
 **Responsibilities:**
+
 - Make exactly the requested changes, nothing more
 - Avoid unrelated edits (no "while I'm here" cleanup)
 - Follow the project's existing conventions (naming, patterns, file organization)
@@ -95,6 +103,7 @@
 **Model tier:** Mid by default. High only if the implementation involves complex algorithmic logic or cross-system coordination.
 
 **Key behaviors:**
+
 - Read the target file before editing it
 - Prefer editing existing files over creating new ones
 - Never add features beyond what was asked
@@ -108,6 +117,7 @@
 **Purpose:** Investigate failures, reproduce bugs, isolate root cause, patch without scope creep.
 
 **Responsibilities:**
+
 - Read the exact error message and stack trace
 - Inspect the failing code path
 - Propose likely root causes (ranked by probability)
@@ -119,6 +129,7 @@
 **Model tier:** Mid first. High only if root cause remains unclear after one serious debugging pass.
 
 **Key behaviors:**
+
 - Never guess at fixes without reading the error first
 - Never expand scope beyond the bug being fixed
 - Always re-run the failing test after patching
@@ -132,6 +143,7 @@
 **Purpose:** Validate changed behavior, identify missing coverage, run focused regression thinking.
 
 **Responsibilities:**
+
 - Confirm acceptance criteria are covered by tests
 - Check nearby edge cases (boundary values, null/empty, error paths)
 - Ensure tests are meaningful (not just asserting true)
@@ -142,6 +154,7 @@
 **Model tier:** Cheap for simple validation, mid for complex logic or integration tests.
 
 **Key behaviors:**
+
 - Never skip testing because "this is a small change"
 - Always run the actual test command, not just reason about coverage
 - Prefer integration tests over excessive mocking for data-layer changes
@@ -154,6 +167,7 @@
 **Purpose:** Review final quality, verify completeness, reject incomplete or risky output. Acts as the **verifier** in the generator-verifier pattern — the Builder generates, the QA verifies against defined criteria.
 
 **Responsibilities:**
+
 - Check spec alignment (does the output match what was asked?)
 - Inspect for regressions in adjacent code
 - Assess maintainability (is this understandable to the next developer?)
@@ -166,11 +180,13 @@
 **Model tier:** Mid by default. High only for critical path features or security-sensitive code.
 
 **Verification approach:**
+
 - Use tool-grounded verification wherever possible: run tests, check build output, lint the code
 - Rules-based feedback is the strongest form — reference specific gate criteria, explain which failed and why
 - When rejecting, provide actionable feedback: what's wrong, where it is, and what a fix looks like
 
 **Key behaviors:**
+
 - Be skeptical by default — assume incomplete until proven otherwise
 - Check that tests actually test the changed behavior (not just existence)
 - Verify naming, file organization, and pattern consistency
@@ -184,6 +200,7 @@
 **Purpose:** Scan for vulnerabilities, audit dependencies, detect secrets, validate auth flows.
 
 **Responsibilities:**
+
 - Check for OWASP Top 10 vulnerabilities in changed code
 - Scan for hardcoded secrets, API keys, credentials
 - Validate input sanitization at system boundaries
@@ -197,6 +214,7 @@
 **Activation:** Only activated when the task touches user input, APIs, authentication, authorization, data boundaries, or dependency updates.
 
 **Key behaviors:**
+
 - Always check for secrets before any commit-related work
 - Classify findings by severity (critical/high/medium/low)
 - Critical and high must be fixed immediately
@@ -209,6 +227,7 @@
 **Purpose:** Profile performance, detect bottlenecks, validate optimization correctness.
 
 **Responsibilities:**
+
 - Measure before/after metrics for changed code paths
 - Identify hot paths and bottleneck candidates
 - Validate that optimizations do not change behavior
@@ -221,6 +240,7 @@
 **Activation:** Only activated when the task affects hot paths, database queries, render loops, or the user explicitly requests performance work.
 
 **Key behaviors:**
+
 - Always measure before optimizing
 - Optimize only the bottleneck, not everything around it
 - Verify correctness after every optimization

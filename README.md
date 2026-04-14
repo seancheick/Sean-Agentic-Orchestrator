@@ -55,6 +55,11 @@ Then open Claude Code and type `/agentic-orchestrator`. That's it.
 ```bash
 npx sean-agentic-orchestrator
 ```
+or
+
+```bash
+npx sean-agentic-orchestrator@latest
+```
 
 Automatically copies skill files to `~/.claude/skills/agentic-orchestrator`.
 
