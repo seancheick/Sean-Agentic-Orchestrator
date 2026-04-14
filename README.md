@@ -15,7 +15,7 @@
 
 ---
 
-*Atomic task decomposition · 9-point verification gates · Advisor pattern · Cost-aware model routing · Self-healing repair loops · Context engineering*
+*Atomic task decomposition · 9-point verification gates · Advisor pattern · Anti-drift checks · Cost-aware model routing · Self-healing repair loops · Context engineering*
 
 </div>
 
@@ -25,14 +25,15 @@
 
 When you give Claude Code a large engineering goal, this skill activates and:
 
-1. 🔍 **Decomposes** the goal into atomic, testable tasks (max 3 files each)
+1. 🔍 **Decomposes** the goal into atomic, testable tasks with task-type hints (bug fix, feature, refactor, perf, security)
 2. ⚡ **Auto-detects** your stack — language, framework, test runner, build system, linter
 3. 💰 **Routes** each task to the cheapest model tier capable of handling it (saves tokens)
 4. 🧠 **Advisor pattern** — cheap executor consults Opus at critical decision points for higher accuracy at lower cost
-5. 🔁 **Executes** tasks sequentially with a strict agent pipeline: Reader → Builder → Test → QA → Leader sign-off
+5. 🔁 **Executes** with smart parallel/sequential decisions — explicit rules prevent wasted multi-agent token burn
 6. ✅ **Verifies** every task through a 9-point Done Gate (build, tests, lint, regression, security, QA...)
 7. 🛠️ **Self-heals** — failures trigger repair loops with convergence detection and smart termination
-8. 🧹 **Context engineering** — just-in-time retrieval, structured notes, artifact-based communication, compaction strategy
+8. 🧭 **Anti-drift checks** — Leader verifies goal alignment every 3 tasks, catches scope creep before it wastes tokens
+9. 🧹 **Context engineering** — just-in-time retrieval, structured notes, artifact-based communication, compaction strategy
 
 > **No task is marked DONE until build passes, tests pass, and the leader agent explicitly approves.**
 
@@ -158,7 +159,7 @@ Lint:   PASS
 
 | Agent | Role |
 |-------|------|
-| 👑 **Leader** | Owns the plan, controls progress, runs done gates |
+| 👑 **Leader** | Owns the plan, controls progress, runs done gates, anti-drift checks |
 | 📋 **Planner** | Decomposes goals into atomic tasks |
 | 📖 **Reader** | Cheap context gathering and targeted file scanning |
 | 🔨 **Builder** | Implements changes with strict scope control |
@@ -202,6 +203,21 @@ The orchestrator routes each task to the **cheapest capable model tier** — no 
 | 🧠 **Advisor** | opus (consulted) | Plan review, high-risk decisions, phase sign-off |
 
 > **New in v2.3:** The Advisor Pattern — instead of running entire tasks on the most expensive model, a Mid-tier executor consults a High-tier advisor only at critical decision points. Result: +2.7% accuracy, -11.9% cost.
+
+---
+
+## 🆕 What's New in v2.3
+
+| Version | Feature | Impact |
+|---------|---------|--------|
+| **v2.3.0** | **Advisor Pattern** — Opus consulted at plan review, critical decisions, and phase sign-off | +2.7% accuracy, -11.9% cost |
+| **v2.3.0** | **Context Engineering** — just-in-time retrieval, structured notes, artifact-based agent communication | Prevents context bloat, extends effective session length |
+| **v2.3.0** | **Smart Repair Termination** — convergence detection, quality thresholds, self-consistency trap avoidance | Stops wasted repair cycles, saves tokens |
+| **v2.3.1** | **Anti-Drift Checks** — Leader verifies goal alignment every 3 tasks | Catches scope creep before it burns tokens |
+| **v2.3.1** | **Parallel Invocation Rules** — explicit decision table for when to parallelize vs stay sequential | Prevents wasted multi-agent overhead (~15x token cost) |
+| **v2.3.1** | **Task-Type Hints** — starting pipeline suggestions for bug fix, feature, refactor, perf, security | Faster planning, but planner adapts based on actual task |
+
+> All enhancements validated against Anthropic's published guidance on building effective agents.
 
 ---
 
