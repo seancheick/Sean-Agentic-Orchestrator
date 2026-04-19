@@ -32,7 +32,7 @@
     "README.md"
   ],
   "bin": {
-    "install-agentic-orchestrator": "./scripts/install.js"
+    "install-agentic-orchestrator": "scripts/install.js"
   },
   "scripts": {
     "postinstall": "node scripts/install.js"
