@@ -3,7 +3,7 @@ name: agentic-orchestrator
 description: Use for complex multi-step engineering work: large features, refactors, debugging campaigns, product backlogs, sprint execution. Triggers on "orchestrate", "break this down", "plan and execute", "sprint", "work on backlog".
 ---
 
-# Agentic Engineering Orchestrator v2.3
+# Agentic Engineering Orchestrator v2.4
 
 ## Purpose
 
@@ -66,9 +66,9 @@ For detailed agent specifications and responsibilities, read `references/agent-r
 Route the lowest-cost model capable of doing the job. For full escalation/de-escalation rules, read `references/model-routing.md`.
 
 **Quick reference:**
-- **Cheap (haiku):** File scanning, symbol extraction, summaries, simple transforms, test inventory
-- **Mid (sonnet):** Feature implementation, code edits, bug fixes, test writing, QA review, standard debugging
-- **High (opus):** Architecture design, ambiguous root-cause analysis, conflicting requirements, high-risk logic, critical final reviews, repeated mid-tier failures
+- **Cheap (haiku 4.5):** File scanning, symbol extraction, summaries, simple transforms, test inventory
+- **Mid (sonnet 4.6):** Feature implementation, code edits, bug fixes, test writing, QA review, standard debugging
+- **High (opus 4.7):** Architecture design, ambiguous root-cause analysis, conflicting requirements, high-risk logic, critical final reviews, repeated mid-tier failures. Use adaptive-thinking `xhigh` only for plan review with high-risk tasks, security audits of auth/crypto/payments, and final phase sign-off.
 
 **Anti-waste rule:** Never run all agents on the highest model by default. De-escalate once hard reasoning is done.
 

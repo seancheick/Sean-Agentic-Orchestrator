@@ -49,6 +49,8 @@ After the Planner generates the task breakdown, the advisor reviews:
 Planner (mid) -> Advisor (high) reviews plan -> Leader approves -> Execution begins
 ```
 
+> **Opus 4.7 note:** Opus 4.7 performs intrinsic self-verification during planning — it catches logical faults and missed dependencies before returning. For standard features (no auth, payments, migrations, or public API contracts), Checkpoint 1 may be skipped when the Planner itself ran on Opus 4.7. Keep Checkpoint 1 mandatory whenever the Planner ran on Sonnet/Haiku, or the plan touches high-risk areas.
+
 ### Checkpoint 2: Critical Decision Points (Phase 3)
 During execution, the advisor is consulted when:
 - A task touches high-risk code (auth, payments, data integrity)
@@ -87,7 +89,7 @@ The advisor subagent returns a concise assessment. Only the assessment enters th
 tools = [{
     "type": "advisor_20260301",
     "name": "advisor",
-    "model": "claude-opus-4-6",
+    "model": "claude-opus-4-7",
     "max_uses": 3  # Cap consultations per request
 }]
 

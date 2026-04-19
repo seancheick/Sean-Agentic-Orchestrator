@@ -20,9 +20,20 @@ Each spawned subagent runs on its assigned model, starts with a fresh 200k conte
 
 | Tier | Model | Latency | Cost | Use Cases |
 |------|-------|---------|------|-----------|
-| **Cheap** | haiku | ~200ms | Lowest | Reading, scanning, extraction, summaries, simple transforms |
-| **Mid** | sonnet | ~1-2s | Medium | Implementation, edits, bug fixes, tests, QA review |
-| **High** | opus | ~3-5s | Highest | Architecture, ambiguous debugging, complex planning, critical review |
+| **Cheap** | haiku (4.5) | ~200ms | Lowest | Reading, scanning, extraction, summaries, simple transforms |
+| **Mid** | sonnet (4.6) | ~1-2s | Medium | Implementation, edits, bug fixes, tests, QA review |
+| **High** | opus (4.7) | ~3-5s | Highest | Architecture, ambiguous debugging, complex planning, critical review |
+
+### Opus 4.7 Adaptive Thinking
+
+Opus 4.7 replaces extended thinking with **adaptive thinking** and exposes an `xhigh` effort level. Reserve `xhigh` for the three highest-leverage calls only — it is expensive:
+
+| Adaptive Effort | When to Use |
+|-----------------|-------------|
+| default | Standard advisor consultations, architecture design, debugging |
+| `xhigh` | Plan review with high-risk tasks, security audit of auth/crypto/payments, final phase sign-off |
+
+Opus 4.7 also self-verifies intrinsically — it catches logical faults during planning and fixes its own code mid-generation. This means Opus outputs need less downstream re-checking than 4.6 outputs did, but the Done Gate still runs unchanged.
 
 ## Default Agent Routing
 

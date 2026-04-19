@@ -74,9 +74,12 @@ This file lives **outside the context window** and gets pulled back in after com
 ### Minimum Cache Thresholds
 | Model | Min Tokens for Cache |
 |-------|---------------------|
-| Opus | 4096 tokens |
+| Opus 4.7 / 4.6 | 4096 tokens |
 | Sonnet 4.6 | 2048 tokens |
+| Haiku 4.5 | 2048 tokens |
 | Sonnet 4.5/4 | 1024 tokens |
+
+> **Note on Opus 4.7 tokenizer:** Opus 4.7 uses a new tokenizer that produces 1.0–1.35x more tokens than 4.6 for the same text. Compact and new-session thresholds (~60% / ~75%) still apply as ratios, but absolute cost estimates for Opus steps should be recalibrated.
 
 ## Artifact-Based Communication
 

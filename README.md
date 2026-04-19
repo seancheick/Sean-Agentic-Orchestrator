@@ -211,16 +211,19 @@ The orchestrator routes each task to the **cheapest capable model tier** — no 
 
 ---
 
-## 🆕 What's New in v2.3
+## 🆕 What's New in v2.4
 
 | Version | Feature | Impact |
 |---------|---------|--------|
-| **v2.3.0** | **Advisor Pattern** — Opus consulted at plan review, critical decisions, and phase sign-off | +2.7% accuracy, -11.9% cost |
-| **v2.3.0** | **Context Engineering** — just-in-time retrieval, structured notes, artifact-based agent communication | Prevents context bloat, extends effective session length |
-| **v2.3.0** | **Smart Repair Termination** — convergence detection, quality thresholds, self-consistency trap avoidance | Stops wasted repair cycles, saves tokens |
+| **v2.4.0** | **Opus 4.7 alignment** — model IDs updated (`claude-opus-4-7`), tokenizer note, cache thresholds for Haiku 4.5 / Sonnet 4.6 / Opus 4.7 | Accurate routing on the current model lineup |
+| **v2.4.0** | **Adaptive-thinking `xhigh` guidance** — reserve `xhigh` for plan review with high-risk tasks, security audits, and phase sign-off | Spends expensive reasoning where it actually pays off |
+| **v2.4.0** | **Opus 4.7 self-verification awareness** — Checkpoint 1 (plan review) optional when Planner itself ran on Opus 4.7 for standard features | Removes one advisor hop for non-high-risk plans |
 | **v2.3.1** | **Anti-Drift Checks** — Leader verifies goal alignment every 3 tasks | Catches scope creep before it burns tokens |
 | **v2.3.1** | **Parallel Invocation Rules** — explicit decision table for when to parallelize vs stay sequential | Prevents wasted multi-agent overhead (~15x token cost) |
 | **v2.3.1** | **Task-Type Hints** — starting pipeline suggestions for bug fix, feature, refactor, perf, security | Faster planning, but planner adapts based on actual task |
+| **v2.3.0** | **Advisor Pattern** — Opus consulted at plan review, critical decisions, and phase sign-off | +2.7% accuracy, -11.9% cost |
+| **v2.3.0** | **Context Engineering** — just-in-time retrieval, structured notes, artifact-based agent communication | Prevents context bloat, extends effective session length |
+| **v2.3.0** | **Smart Repair Termination** — convergence detection, quality thresholds, self-consistency trap avoidance | Stops wasted repair cycles, saves tokens |
 
 > All enhancements validated against Anthropic's published guidance on building effective agents.
 
